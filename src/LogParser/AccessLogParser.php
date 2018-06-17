@@ -10,8 +10,9 @@ class AccessLogParser implements LogParserInterface
 
     public function parse(string $line): AccessLog
     {
-        preg_match(self::PATTERN, $line, $matches);
-        // TODO check for parser errors
+        if (!preg_match(self::PATTERN, $line, $matches)) {
+            throw new ParseException('Failed to parse line: ' . $line);
+        }
 
         $accessLog = new AccessLog();
         $accessLog->setRemoteHost($matches['ip'])

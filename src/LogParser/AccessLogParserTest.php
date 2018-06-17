@@ -28,4 +28,13 @@ class AccessLogParserTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @expectedException \App\LogParser\ParseException
+     * @expectedExceptionMessage Failed to parse line: foobar
+     */
+    public function testParseInvalidLine()
+    {
+        (new AccessLogParser())->parse('foobar');
+    }
 }
