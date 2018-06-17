@@ -6,7 +6,7 @@ use App\Entity\AccessLog;
 
 class AccessLogParser implements LogParserInterface
 {
-    const PATTERN = '~^(?P<ip>.*?) (?P<remote_log_name>.*?) (?P<userid>.*?) \[(?P<date>.*?)\] \"(?P<request_method>.*?) (?P<path>.*?) (?P<request_version>HTTP/.*)?\" (?P<status>.*?) (?P<length>.*?)$~';
+    const PATTERN = '~^(?P<remote_host>.*?) (?P<client_ident>.*?) (?P<auth_user>.*?) \[(?P<timestamp>.*?)\] \"(?P<method>.*?) (?P<request_path>.*?) (?P<http_version>HTTP/.*)?\" (?P<server_response>.*?) (?P<response_size>.*?)$~';
 
     public function parse(string $line): AccessLog
     {
@@ -15,15 +15,15 @@ class AccessLogParser implements LogParserInterface
         }
 
         $accessLog = new AccessLog();
-        $accessLog->setRemoteHost($matches['ip'])
-            ->setClientIdent($this->convertNullValues($matches['remote_log_name']))
-            ->setAuthUser($this->convertNullValues($matches['userid']))
-            ->setTimestamp(new \DateTimeImmutable($matches['date']))
-            ->setMethod($matches['request_method'])
-            ->setRequestPath($matches['path'])
-            ->setHttpVersion($matches['request_version'])
-            ->setServerResponse($matches['status'])
-            ->setResponseSize((int)$this->convertNullValues($matches['length']))
+        $accessLog->setRemoteHost($matches['remote_host'])
+            ->setClientIdent($this->convertNullValues($matches['client_ident']))
+            ->setAuthUser($this->convertNullValues($matches['auth_user']))
+            ->setTimestamp(new \DateTimeImmutable($matches['timestamp']))
+            ->setMethod($matches['method'])
+            ->setRequestPath($matches['request_path'])
+            ->setHttpVersion($matches['http_version'])
+            ->setServerResponse($matches['server_response'])
+            ->setResponseSize((int)$this->convertNullValues($matches['response_size']))
         ;
 
         return $accessLog;
