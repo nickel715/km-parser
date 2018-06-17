@@ -16,16 +16,21 @@ class AccessLogParser implements LogParserInterface
 
         $accessLog = new AccessLog();
         $accessLog->setRemoteHost($matches['ip'])
-            ->setClientIdent($matches['remote_log_name'] == '-' ? null : $matches['remote_log_name'])
-            ->setAuthUser($matches['userid'])
+            ->setClientIdent($this->convertNullValues($matches['remote_log_name']))
+            ->setAuthUser($this->convertNullValues($matches['userid']))
             ->setTimestamp(new \DateTimeImmutable($matches['date']))
             ->setMethod($matches['request_method'])
             ->setRequestPath($matches['path'])
             ->setHttpVersion($matches['request_version'])
             ->setServerResponse($matches['status'])
-            ->setResponseSize($matches['length'])
+            ->setResponseSize((int)$this->convertNullValues($matches['length']))
         ;
 
         return $accessLog;
+    }
+
+    protected function convertNullValues($value)
+    {
+        return $value == '-' ? null : $value;
     }
 }
