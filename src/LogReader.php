@@ -17,7 +17,10 @@ class LogReader
     public function readLog(\SplFileObject $file): \Generator
     {
         while (!$file->eof()) {
-            yield $this->logParser->parse($file->fgets());
+            $line = trim($file->fgets());
+            if (!empty($line)) {
+                yield $this->logParser->parse($line);
+            }
         }
     }
 }

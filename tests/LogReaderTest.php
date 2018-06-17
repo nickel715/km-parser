@@ -23,7 +23,7 @@ class LogReaderTest extends TestCase
         ;
 
         $file = new \SplFileObject('php://memory', 'w+');
-        $file->fwrite(self::TEST_LOG_LINE);
+        $file->fwrite(self::TEST_LOG_LINE . "\n");
         $file->rewind();
 
         $sut = new LogReader($logParser);
